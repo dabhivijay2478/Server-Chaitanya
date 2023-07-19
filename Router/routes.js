@@ -30,7 +30,7 @@ passport.deserializeUser((obj, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
-    callbackURL: 'http://localhost:3000/auth/google/callback',
+    callbackURL: 'https://server-chaitanya.onrender.com/auth/google/callback',
 }, (accessToken, refreshToken, profile, done) => {
     // Use the user information from Google for authentication or registration
     return done(null, profile);
