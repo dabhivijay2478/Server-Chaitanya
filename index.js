@@ -1,7 +1,5 @@
 const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const passport = require('passport');
+
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
 

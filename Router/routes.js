@@ -1,76 +1,14 @@
 const express = require('express');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const { DiscussServiceClient } = require("@google-ai/generativelanguage");
 const { GoogleAuth } = require("google-auth-library");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./.env" });
-const session = require('express-session');
 const router = express.Router();
-router.use(session({
-    secret: process.env.clientSecret,
-    resave: false,
-    saveUninitialized: true,
-}));
+const GOOGLE_CLIENT_ID = process.env.clientID;
 
-// // Initialize Passport
-router.use(passport.initialize());
-router.use(passport.session());
-
-// // Passport serialization
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((obj, done) => {
-    done(null, obj);
-});
-
-// Configure the Google Strategy (You can move this to a separate file if needed)
-passport.use(new GoogleStrategy({
-    clientID: process.env.clientID,
-    clientSecret: process.env.clientSecret,
-    callbackURL: 'https://server-chaitanya.onrender.com/auth/google/callback',
-}, (accessToken, refreshToken, profile, done) => {
-    // Use the user information from Google for authentication or registration
-    return done(null, profile);
-}));
-
-// Middleware to check if the user is authenticated
-const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/login');
-};
-
-// Route for Google Sign-In
-router.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-// Callback route after Google Sign-In
-router.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/login' }),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
-
-// Route for logging out
-router.get('/logout', (req, res) => {
-    req.logout(); // Remove the unnecessary callback
-    res.redirect('/');
-});
-
-// Home page
-router.get('/', ensureAuthenticated, (req, res) => {
-    res.send(`<h1>Hello, ${req.user.displayName}!</h1><a href="/logout">Logout</a>`);
-});
-
-// Login page
-router.get('/login', (req, res) => {
-    res.send('<a href="/auth/google">Login with Google</a>');
+// GET endpoint to provide the Google OAuth Client ID
+router.get('/api/google-client-id', (req, res) => {
+    res.json({ clientId: GOOGLE_CLIENT_ID });
 });
 
 router.post("/generate", async (req, res) => {
