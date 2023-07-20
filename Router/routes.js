@@ -6,17 +6,17 @@ dotenv.config({ path: "./.env" });
 const router = express.Router();
 const GOOGLE_CLIENT_ID = process.env.clientID;
 
-// GET endpoint to provide the Google OAuth Client ID
+
 router.get('/api/google-client-id', (req, res) => {
     res.json({ clientId: GOOGLE_CLIENT_ID });
 });
 
 router.post("/generate", async (req, res) => {
     try {
-        // Get user input from the request body
+      
         const userInput = req.body.userInput;
 
-        // Check if 'userInput' is present in the request body
+      
         if (!userInput) {
             return res.status(400).json({ error: "Missing 'userInput' in the request body." });
         }
@@ -35,9 +35,9 @@ router.post("/generate", async (req, res) => {
             prompt: {
                 context: "Hi, I am Chaitanya .",
                 messages: [
-                    // User input message
+                  
                     { role: "user", content: userInput },
-                    // Add more messages here if you want to continue the conversation
+                 
                 ],
             },
         });
@@ -45,7 +45,7 @@ router.post("/generate", async (req, res) => {
         const generatedResponse = result[0].candidates[0].content;
         console.log("Generated Response:", generatedResponse);
 
-        res.json({ generatedResponse }); // Send the generated response back in the response JSON
+        res.json({ generatedResponse }); 
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "An error occurred" });
